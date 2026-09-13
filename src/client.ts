@@ -94,6 +94,8 @@ export class BaseClient {
       },
       body:   form,
       signal,
+      // Required in Node.js 18+ for duplex streaming (request body + response)
+      ...(typeof window === 'undefined' ? { duplex: 'half' } : {}),
     })
 
     return this.parseResponse<T>(res)
@@ -118,6 +120,8 @@ export class BaseClient {
         {
           code:    err?.code    ?? 'UNKNOWN_ERROR',
           message: err?.message ?? `HTTP ${res.status}`,
+          // Attach the full response body so callers can extract result data from 422s
+          body:    body,
         },
         res.status,
       )
