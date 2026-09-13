@@ -20,17 +20,20 @@ export interface KernaqConfig {
 export interface KernaqErrorBody {
   code:    string
   message: string
+  body?:   unknown
 }
 
 export class KernaqError extends Error {
   readonly code:       string
   readonly statusCode: number
+  readonly body:       unknown
 
   constructor(body: KernaqErrorBody, statusCode: number) {
     super(body.message)
     this.name       = 'KernaqError'
     this.code       = body.code
     this.statusCode = statusCode
+    this.body       = body.body ?? null
   }
 }
 
