@@ -3,6 +3,7 @@ name: Publish
 on:
   push:
     tags: ["v*.*.*"]
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -15,7 +16,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
       - name: Install deps
@@ -23,9 +24,6 @@ jobs:
 
       - name: Build
         run: npm run build
-
-      - name: Set version from tag
-        run: npm version ${GITHUB_REF#refs/tags/v} --no-git-tag-version
 
       - name: Publish to npm
         run: npm publish --access public

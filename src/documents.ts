@@ -35,27 +35,17 @@ export class DocumentsResource extends BaseClient {
   }
 
   /**
-   * Validate a document — returns validity flags without full OCR (synchronous).
-   *
-   * @example
-   * const result = await kernaq.documents.validate({
-   *   document:     fs.createReadStream('id.jpg'),
-   *   documentType: 'national_id',
-   * })
-   * console.log(result.valid) // true
+   * @deprecated This endpoint does not exist on the Kernaq API.
+   * Use `extract()` for document OCR. This method will throw at runtime.
+   * It is kept here to avoid breaking existing call sites — remove it from
+   * your code and replace with `extract()`.
    */
-  validate(req: ValidateDocumentRequest): Promise<ValidateDocumentResponse> {
-    const fields: Record<string, string> = {}
-    if (req.documentType) fields['document_type'] = req.documentType
-    if (req.country)      fields['country']       = req.country
-
-    return this.upload<ValidateDocumentResponse>('/documents/validate', fields, [
-      {
-        field:       'document',
-        value:       req.document as FileInput,
-        filename:    req.documentName ?? 'document.jpg',
-        contentType: 'image/jpeg',
-      },
-    ])
+  validate(_req: ValidateDocumentRequest): Promise<ValidateDocumentResponse> {
+    return Promise.reject(
+      new Error(
+        'KernaqSDK: documents.validate() is not a valid API endpoint. ' +
+        'Use documents.extract() to read document fields.'
+      )
+    )
   }
 }
